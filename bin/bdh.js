@@ -12,7 +12,7 @@ const hokan = require('../lib/commands/hokan.js');
 const update = require('../lib/commands/update.js');
 const edit = require('../lib/commands/edit.js');
 
-const DEFAULT_DIR = './data/items';
+const DEFAULT_DIR = '../bangumi-data/data/items';
 
 // eslint-disable-next-line no-unused-vars
 const { argv } = yargs

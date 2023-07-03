@@ -10,6 +10,7 @@
     "lib"
   ],
   "scripts": {
+    "bdh": "node ./bin/bdh.js",
     "lint": "eslint bin lib",
     "test": "npm run lint",
     "preversion": "npm test",

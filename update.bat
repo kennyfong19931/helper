@@ -1,3 +1,11 @@
+@REM 需要注意續集同ID: abema, netfilx , disneyplus, bilibili, muse_hk, ani_one, ani_one_asia
+
+echo ">>> nicovideo"
+call npm run bdh hokan nicovideo
+echo ">>> unext"
+call npm run bdh hokan unext
+echo ">>> abema"
+call npm run bdh hokan abema
 echo ">>> muse_hk"
 call npm run bdh hokan muse_hk
 echo ">>> ani_one"

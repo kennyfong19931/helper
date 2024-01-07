@@ -1,4 +1,4 @@
-@REM 需要注意續集同ID: abema, netfilx , disneyplus, bilibili, muse_hk, ani_one, ani_one_asia
+@REM 需要注意續集同ID: abema, netfilx, disneyplus, bilibili, muse_hk, ani_one, ani_one_asia
 
 echo ">>> nicovideo"
 call npm run bdh hokan nicovideo

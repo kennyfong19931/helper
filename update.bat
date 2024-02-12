@@ -22,14 +22,14 @@ echo ">>> disneyplus"
 call npm run bdh hokan disneyplus
 echo ">>> nowPlayer"
 call npm run bdh hokan nowPlayer
-echo ">>> bilibili"
-call npm run bdh hokan bilibili
+@REM echo ">>> bilibili"
+@REM call npm run bdh hokan bilibili
 echo ">>> bilibili_hk_mo_tw"
 call npm run bdh hokan bilibili_hk_mo_tw
 echo ">>> bilibili_hk_mo"
 call npm run bdh hokan bilibili_hk_mo
-echo ">>> bilibili_tw"
-call npm run bdh hokan bilibili_tw
+@REM echo ">>> bilibili_tw"
+@REM call npm run bdh hokan bilibili_tw
 echo ">>> gamer"
 call npm run bdh hokan gamer
 

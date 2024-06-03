@@ -30,8 +30,10 @@ echo ">>> bilibili_hk_mo"
 call npm run bdh hokan bilibili_hk_mo
 @REM echo ">>> bilibili_tw"
 @REM call npm run bdh hokan bilibili_tw
-echo ">>> gamer"
-call npm run bdh hokan gamer
+@REM echo ">>> gamer"
+@REM call npm run bdh hokan gamer
+echo ">>> gamer_hk"
+call npm run bdh hokan gamer_hk
 
 
 @REM call npm run bdh update 202304

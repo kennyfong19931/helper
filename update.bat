@@ -20,8 +20,6 @@ echo ">>> mytv"
 call npm run bdh hokan mytv
 echo ">>> disneyplus"
 call npm run bdh hokan disneyplus
-echo ">>> nowPlayer"
-call npm run bdh hokan nowPlayer
 @REM echo ">>> bilibili"
 @REM call npm run bdh hokan bilibili
 echo ">>> bilibili_hk_mo_tw"

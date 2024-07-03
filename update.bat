@@ -33,5 +33,12 @@ call npm run bdh hokan bilibili_hk_mo
 echo ">>> gamer_hk"
 call npm run bdh hokan gamer_hk
 
+echo ">>> dmhy"
+call npm run bdh hokan dmhy
+echo ">>> mikan"
+call npm run bdh hokan mikan
+echo ">>> bangumi_moe"
+call npm run bdh hokan bangumi_moe
 
-@REM call npm run bdh update 202304
+
+@REM call npm run bdh update 202407

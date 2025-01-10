@@ -1,4 +1,4 @@
-@REM 需要注意續集同ID: abema, netfilx, disneyplus, bilibili, muse_hk, ani_one, ani_one_asia
+@REM 需要注意續集同ID: abema, netfilx, disneyplus, bilibili, muse_hk, ani_one, ani_one_asia, crunchyroll
 
 echo ">>> nicovideo"
 call npm run bdh hokan nicovideo
@@ -6,12 +6,18 @@ echo ">>> unext"
 call npm run bdh hokan unext
 echo ">>> abema"
 call npm run bdh hokan abema
+echo ">>> danime"
+call npm run bdh hokan danime
 echo ">>> muse_hk"
 call npm run bdh hokan muse_hk
+@REM echo ">>> muse_tw"
+@REM call npm run bdh hokan muse_tw
 echo ">>> ani_one"
 call npm run bdh hokan ani_one
 echo ">>> ani_one_asia"
 call npm run bdh hokan ani_one_asia
+echo ">>> tropics"
+call npm run bdh hokan tropics
 echo ">>> viu"
 call npm run bdh hokan viu
 echo ">>> netflix"
@@ -20,6 +26,8 @@ echo ">>> mytv"
 call npm run bdh hokan mytv
 echo ">>> disneyplus"
 call npm run bdh hokan disneyplus
+echo ">>> crunchyroll"
+call npm run bdh hokan crunchyroll
 @REM echo ">>> bilibili"
 @REM call npm run bdh hokan bilibili
 echo ">>> bilibili_hk_mo_tw"
@@ -41,4 +49,4 @@ echo ">>> bangumi_moe"
 call npm run bdh hokan bangumi_moe
 
 
-@REM call npm run bdh update 202407
+@REM call npm run bdh update 202501

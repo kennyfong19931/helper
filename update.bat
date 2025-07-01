@@ -54,4 +54,4 @@ echo ">>> bangumi_moe"
 call npx bdh hokan bangumi_moe
 
 
-@REM call npx bdh update 202504
+@REM call npx bdh update 202507

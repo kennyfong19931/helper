@@ -53,6 +53,14 @@ call npx bdh hokan bilibili_hk_mo
 @REM echo ">>> bangumi_moe"
 @REM call npx bdh hokan bangumi_moe
 
+@REM echo ">>> mal"
+@REM call npx bdh hokan mal
+@REM echo ">>> aniList"
+@REM call npx bdh hokan aniList
+@REM echo ">>> anidb"
+@REM call npx bdh hokan anidb
+@REM echo ">>> tmdb"
+@REM call npx bdh hokan tmdb
 
 
 @REM echo ">>> nicovideo"
@@ -101,6 +109,14 @@ call npx bdh hokan bilibili_hk_mo
 @REM echo ">>> muse_tw"
 @REM call npx bdh cleanup muse_tw
 
+@REM echo ">>> youtubeBeforeDefault"
+@REM call npx bdh validate youtubeBeforeDefault
+@REM echo ">>> urlPunycode"
+@REM call npx bdh validate urlPunycode
+@REM echo ">>> tmdb"
+@REM call npx bdh validate tmdb
+@REM echo ">>> tmdbBegin"
+@REM call npx bdh validate tmdbBegin
 
 
-@REM call npx bdh update 202507
+@REM call npx bdh update 202601

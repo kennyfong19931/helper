@@ -1,4 +1,5 @@
 @REM 需要注意續集同ID: abema, netflix, disneyplus, bilibili, muse_hk, ani_one, ani_one_asia, crunchyroll
+@REM git apply --reject --whitespace=fix ../bangumi-data/helper.patch
 
 echo ">>> nicovideo"
 call npx bdh hokan nicovideo
@@ -119,4 +120,4 @@ call npx bdh hokan bilibili_hk_mo
 @REM call npx bdh validate tmdbBegin
 
 
-@REM call npx bdh update 202601
+@REM call npx bdh update 202604

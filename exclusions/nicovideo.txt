@@ -9,9 +9,6 @@ animesijyuku
 seigura
 iwaianiban
 seigura-radio
-night-charapedia
-minorihonokareinanopanasai
-ewg-ewg
 ak-republic
 tsukasa-fushimi
 animestyle
@@ -38,12 +35,9 @@ higurashianime
 comic_iowl2
 riskit
 noriko-iiyone
-bokulaku
 tomozaki-kun
 wakuwaku-kids
 higewosoruch
-hakuoki-musical
-vivi-villain
 wsy-idolls
 anime-86
 oyster
@@ -55,7 +49,6 @@ isekaimaou-omega-wshokan2
 isekaimaou-omega-wshokan1
 pripara_friendship_2020
 away
-kimetsunoutage
 hello-prichan-world
 NextStarsCircle
 dogengers_

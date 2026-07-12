@@ -9,22 +9,16 @@ animesijyuku
 seigura
 iwaianiban
 seigura-radio
-night-charapedia
-minorihonokareinanopanasai
-ewg-ewg
 ak-republic
 tsukasa-fushimi
 animestyle
 fate-go
 allout-stage
-butai-gagmanga02
 ch226
-butai-gagmanga
 jamkitchen
 gue
 anime-sp
 micmic
-butai-gagmanga-mukaikaze
 numaochi
 gekidan_sphere
 bitatama
@@ -38,12 +32,9 @@ higurashianime
 comic_iowl2
 riskit
 noriko-iiyone
-bokulaku
 tomozaki-kun
 wakuwaku-kids
 higewosoruch
-hakuoki-musical
-vivi-villain
 wsy-idolls
 anime-86
 oyster
@@ -55,7 +46,6 @@ isekaimaou-omega-wshokan2
 isekaimaou-omega-wshokan1
 pripara_friendship_2020
 away
-kimetsunoutage
 hello-prichan-world
 NextStarsCircle
 dogengers_
@@ -198,7 +188,6 @@ teamyoutak
 anonymous2020-exhibition
 onegai
 daiundoukai-nico
-wingstar
 comic_iowl3
 furuyach
 girls-und-panzer-concert
@@ -227,4 +216,4 @@ ijigen-fes
 aqours-documentary
 anime-japan-2026-creator
 dogengers7
-ultraman-teo
+ultraman-teo

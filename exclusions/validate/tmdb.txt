@@ -13,7 +13,6 @@ tv/20111/season/2
 tv/37584/season/0
 tv/9550/season/3
 tv/31665/season/0
-tv/30984/season/2
 tv/37514
 tv/12598
 movie/18874
@@ -68,8 +67,6 @@ tv/136029
 tv/82684/season/2
 tv/85843
 tv/88046/season/3
-tv/86031/season/3
-tv/86031/season/4
 tv/90855
 tv/90660
 tv/91768

@@ -45,7 +45,6 @@ m-78_trigger
 isekaimaou-omega-wshokan2
 isekaimaou-omega-wshokan1
 pripara_friendship_2020
-away
 hello-prichan-world
 NextStarsCircle
 dogengers_
@@ -217,3 +216,4 @@ aqours-documentary
 anime-japan-2026-creator
 dogengers7
 ultraman-teo
+seiyujapan

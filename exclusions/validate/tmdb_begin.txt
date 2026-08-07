@@ -211,8 +211,6 @@ movie/1157408
 movie/296917
 movie/712378
 movie/474161
-tv/298625/season/2
-tv/298625/season/3
 tv/113075/season/4
 tv/119274
 tv/67126/season/0/episode/13
@@ -375,3 +373,6 @@ tv/79594
 tv/118443
 movie/871726
 movie/1452267
+tv/45893/season/0/episode/8
+movie/212156
+tv/196400/season/0

@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JST 30小時制 轉 UTC 工具 (ISO 8601)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            night: {
+              800: '#111827',
+              850: '#0e1626',
+              900: '#090d16',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom scrollbar and animations */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 font-mono font-bold text-lg">
+          30h
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            JST 30小時制 轉 UTC
+            <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono">ISO 8601</span>
+          </h1>
+          <p class="text-xs text-slate-400">日本深夜廣播時制 (00:00 ~ 30:00) 轉換器</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btnCurrentJst" type="button" class="text-xs flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition border border-slate-700 active:scale-95">
+          <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          填入現在時間 (JST)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
+
+    <!-- Quick Paste Card -->
+    <div class="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 shadow-xl backdrop-blur relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+        <label for="quickInput" class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          智慧文字快速解析
+        </label>
+        <span class="text-xs text-slate-400">支援貼上如：<code class="text-sky-300 font-mono">2026-09-25 25:30</code> 或 <code class="text-sky-300 font-mono">9/25 26:15:30</code></span>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <div class="relative flex-1">
+          <input 
+            type="text" 
+            id="quickInput" 
+            placeholder="請在此直接貼上字串，例如：2026-09-25 25:30 或 27:00" 
+            class="w-full bg-slate-950/70 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 font-mono transition"
+          >
+        </div>
+        <button 
+          id="btnQuickParse"
+          type="button" 
+          class="px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-sm font-medium transition shadow-md shadow-sky-600/20 active:scale-95 flex items-center justify-center gap-1.5"
+        >
+          解析並填入
+        </button>
+      </div>
+    </div>
+
+    <!-- Structured Form Section -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+      <!-- Left: Input Controls (7 cols) -->
+      <div class="md:col-span-7 bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-xl space-y-6">
+        <div>
+          <h2 class="text-base font-semibold text-white mb-1 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+            輸入播出與放送時間 (JST 日本標準時)
+          </h2>
+          <p class="text-xs text-slate-400">設定基準日期（放送日）與 0 ~ 30 小時制之時刻</p>
+        </div>
+
+        <!-- Date selector -->
+        <div>
+          <label for="inputDate" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+            基準日期（放送開始日）
+          </label>
+          <div class="relative">
+            <input 
+              type="date" 
+              id="inputDate" 
+              class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 text-sm font-mono focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition [color-scheme:dark]"
+            >
+          </div>
+        </div>
+
+        <!-- Time inputs: H:M:S -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+              時間 (小時 00-30 : 分 00-59 : 秒 00-59)
+            </label>
+            <span class="text-xs text-sky-400">小時範圍可達 30</span>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <div class="relative">
+                <input 
+                  type="number" 
+                  id="inputHour" 
+                  min="0" 
+                  max="30" 
+                  placeholder="25" 
+                  class="w-full text-center bg-slate-950 border border-slate-700 rounded-xl py-3 text-lg font-mono font-bold text-sky-400 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
+                >
+                <span class="absolute right-2.5 top-3.5 text-xs text-slate-500 pointer-events-none">時</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="relative">
+                <input 
+                  type="number" 
+                  id="inputMinute" 
+                  min="0" 
+                  max="59" 
+                  placeholder="30" 
+                  class="w-full text-center bg-slate-950 border border-slate-700 rounded-xl py-3 text-lg font-mono font-bold text-slate-200 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
+                >
+                <span class="absolute right-2.5 top-3.5 text-xs text-slate-500 pointer-events-none">分</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="relative">
+                <input 
+                  type="number" 
+                  id="inputSecond" 
+                  min="0" 
+                  max="59" 
+                  placeholder="00" 
+                  value="0" 
+                  class="w-full text-center bg-slate-950 border border-slate-700 rounded-xl py-3 text-lg font-mono font-bold text-slate-200 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
+                >
+                <span class="absolute right-2.5 top-3.5 text-xs text-slate-500 pointer-events-none">秒</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Hour Presets -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-2">常用深夜時段快捷填入：</label>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="24" data-m="00">24:00 (次日00:00)</button>
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="24" data-m="30">24:30</button>
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="25" data-m="00">25:00 (次日01:00)</button>
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="25" data-m="30">25:30 (次日01:30)</button>
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="26" data-m="00">26:00 (次日02:00)</button>
+            <button type="button" class="preset-btn px-2.5 py-1 text-xs font-mono rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-h="28" data-m="00">28:00 (次日04:00)</button>
+          </div>
+        </div>
+
+        <!-- Precision Options -->
+        <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="checkMilliseconds" class="rounded bg-slate-950 border-slate-700 text-sky-500 focus:ring-0" checked>
+            <span>ISO 包含毫秒 (.000Z)</span>
+          </label>
+          <button type="button" id="btnReset" class="text-slate-400 hover:text-slate-200 transition underline underline-offset-2">重設表單</button>
+        </div>
+      </div>
+
+      <div class="md:col-span-5 flex flex-col gap-4">
+
+        <!-- Main UTC Result Card -->
+        <div class="bg-gradient-to-br from-slate-900 to-indigo-950/40 rounded-2xl p-6 border border-sky-500/30 shadow-xl flex-1 flex flex-col justify-between relative overflow-hidden">
+          
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                轉換目標：UTC (ISO 8601)
+              </span>
+              <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">協調世界時</span>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-2">點擊下方代碼框即可直接複製：</p>
+
+            <!-- Click to Copy Main Display -->
+            <button 
+              id="copyUtcCard"
+              type="button" 
+              class="w-full text-left group bg-slate-950/90 hover:bg-slate-950 border border-sky-500/40 hover:border-sky-400 rounded-xl p-4 transition-all duration-200 cursor-pointer shadow-inner relative"
+              title="點擊複製到剪貼簿"
+            >
+              <div class="flex items-start justify-between gap-2">
+                <span id="outputUtcIso" class="font-mono text-lg sm:text-xl font-bold text-sky-200 tracking-tight break-all">
+                  --
+                </span>
+                <span class="shrink-0 p-1.5 rounded-lg bg-slate-800 group-hover:bg-sky-500/20 text-slate-400 group-hover:text-sky-300 transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                </span>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span class="font-mono text-slate-500">標準格式 (Zero Offset)</span>
+                <span class="text-sky-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 font-sans">
+                  點擊複製
+                </span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Secondary reference cards -->
+          <div class="space-y-2.5 mt-6 pt-4 border-t border-slate-800">
+            <!-- JST 24h Equivalent -->
+            <div class="bg-slate-950/50 rounded-lg p-3 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">實際日本常規時間 (JST 24H)</span>
+                <span id="outputJstNormal" class="font-mono text-sm text-slate-200 font-semibold">--</span>
+              </div>
+              <button 
+                type="button" 
+                id="btnCopyJst" 
+                class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+              >
+                複製
+              </button>
+            </div>
+
+            <!-- Unix Timestamp -->
+            <div class="bg-slate-950/50 rounded-lg p-3 border border-slate-800/80 flex items-center justify-between">
+              <div>
+                <span class="text-[11px] text-slate-400 block font-medium">Unix 時間戳 (秒)</span>
+                <span id="outputTimestamp" class="font-mono text-sm text-slate-400">--</span>
+              </div>
+              <button 
+                type="button" 
+                id="btnCopyTimestamp" 
+                class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+              >
+                複製
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="bg-slate-900/60 rounded-2xl p-6 border border-slate-800 text-slate-300 text-sm space-y-4">
+      <h3 class="font-bold text-white text-base flex items-center gap-2">
+        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        關於日本「30小時制」（深夜時間制）原理
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-slate-400">
+        <div class="space-y-2">
+          <p>
+            <strong class="text-slate-200">什麼是 30 小時制？</strong><br>
+            在日本電視動畫、廣播、舞台與夜班行業中，跨過午夜 24:00 的深夜時段常被視為「前一個營業日（播出日）的延續」。例如週五深夜播出的動畫，若排在週六凌晨 01:30，節目表常標記為「<span class="text-sky-300 font-mono">週五 25:30</span>」。
+          </p>
+          <ul class="list-disc list-inside space-y-1 text-slate-400 font-mono">
+            <li>24:00 = 次日 00:00 JST</li>
+            <li>25:30 = 次日 01:30 JST</li>
+            <li>28:00 = 次日 04:00 JST</li>
+          </ul>
+        </div>
+        <div class="space-y-2">
+          <p>
+            <strong class="text-slate-200">轉換為 UTC 之公式：</strong><br>
+            日本標準時間（JST）為 UTC+9。先將 30 小時制換算為正規 JST 日期時間（小時數超過 24 則日數加 1，小時減 24），再將正規時間扣除 9 小時即可取得世界協調時間（UTC）。
+          </p>
+          <div class="p-2.5 rounded bg-slate-950 font-mono text-[11px] text-indigo-300 border border-slate-800">
+            例：2026-09-25 25:30:00 JST<br>
+            ➔ 正規 JST: 2026-09-26 01:30:00 (+09:00)<br>
+            ➔ UTC: 2026-09-25T16:30:00Z
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-4 text-center text-xs text-slate-500">
+    <p>JST 30-Hour to UTC Converter &bull; 支援 ISO 8601 標準輸出</p>
+  </footer>
+
+  <!-- Toast Notification element -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-16 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2.5 bg-sky-500 text-white px-4 py-3 rounded-xl shadow-xl font-medium text-sm">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span id="toastMsg">已複製到剪貼簿！</span>
+  </div>
+
+  <script>
+    // DOM Elements
+    const inputDate = document.getElementById('inputDate');
+    const inputHour = document.getElementById('inputHour');
+    const inputMinute = document.getElementById('inputMinute');
+    const inputSecond = document.getElementById('inputSecond');
+    const quickInput = document.getElementById('quickInput');
+    const btnQuickParse = document.getElementById('btnQuickParse');
+    const btnCurrentJst = document.getElementById('btnCurrentJst');
+    const btnReset = document.getElementById('btnReset');
+    const checkMilliseconds = document.getElementById('checkMilliseconds');
+
+    // Output elements
+    const outputUtcIso = document.getElementById('outputUtcIso');
+    const outputJstNormal = document.getElementById('outputJstNormal');
+    const outputTimestamp = document.getElementById('outputTimestamp');
+    const copyUtcCard = document.getElementById('copyUtcCard');
+    const btnCopyJst = document.getElementById('btnCopyJst');
+    const btnCopyTimestamp = document.getElementById('btnCopyTimestamp');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    let toastTimer = null;
+
+    /**
+     * Show clean toast message without alert()
+     */
+    function showToast(message) {
+      if (toastTimer) clearTimeout(toastTimer);
+      toastMsg.textContent = message;
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 2200);
+    }
+
+    /**
+     * Copy text safely inside iframe using standard textarea fallback
+     */
+    function copyTextToClipboard(text, successMsg = '已複製到剪貼簿！') {
+      if (!text || text === '--') return;
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '0';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (successful) {
+          showToast(successMsg);
+        } else {
+          showToast('複製失敗，請手動複製');
+        }
+      } catch (err) {
+        showToast('複製失敗，請手動選取');
+      }
+    }
+
+    /**
+     * Zero pad utility
+     */
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    /**
+     * Compute conversion from 30h JST to UTC and standard JST
+     */
+    function calculate() {
+      const dateStr = inputDate.value; // YYYY-MM-DD
+      const hStr = inputHour.value;
+      const mStr = inputMinute.value;
+      const sStr = inputSecond.value;
+
+      if (!dateStr || hStr === '' || mStr === '') {
+        outputUtcIso.textContent = '--';
+        outputJstNormal.textContent = '--';
+        outputTimestamp.textContent = '--';
+        return;
+      }
+
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const hours = parseInt(hStr, 10) || 0;
+      const minutes = parseInt(mStr, 10) || 0;
+      const seconds = parseInt(sStr, 10) || 0;
+
+      // Construct Date in UTC considering JST offset (+9)
+      // JST is UTC + 9.
+      // Base date: Year, Month (0-based), Day.
+      // Add 'hours' (which can be 25, 26, etc.), minutes, seconds.
+      // UTC time = JST time - 9 hours.
+      const utcDate = new Date(Date.UTC(year, month - 1, day, hours - 9, minutes, seconds, 0));
+
+      // Construct Normal JST representation:
+      // We can take the utcDate and add 9 hours to format JST accurately
+      const jstDate = new Date(utcDate.getTime() + 9 * 3600 * 1000);
+
+      // Format ISO 8601 string
+      let isoString = utcDate.toISOString();
+      if (!checkMilliseconds.checked) {
+        // Remove .000 if user prefers standard YYYY-MM-DDTHH:mm:ssZ
+        isoString = isoString.replace('.000Z', 'Z');
+      }
+
+      // Format normal 24h JST: YYYY-MM-DD HH:mm:ss JST
+      const jstY = jstDate.getUTCFullYear();
+      const jstM = pad2(jstDate.getUTCMonth() + 1);
+      const jstD = pad2(jstDate.getUTCDate());
+      const jstH = pad2(jstDate.getUTCHours());
+      const jstMin = pad2(jstDate.getUTCMinutes());
+      const jstSec = pad2(jstDate.getUTCSeconds());
+      const normalJstStr = `${jstY}-${jstM}-${jstD} ${jstH}:${jstMin}:${jstSec} JST (+09:00)`;
+
+      // Timestamp in seconds
+      const unixSec = Math.floor(utcDate.getTime() / 1000);
+
+      // Render
+      outputUtcIso.textContent = isoString;
+      outputJstNormal.textContent = normalJstStr;
+      outputTimestamp.textContent = unixSec;
+    }
+
+    /**
+     * STREAMING_CHUNK:Parsing quick text strings
+     * Parses variations like:
+     * - "2026-09-25 25:30"
+     * - "2026/09/25 25:30:00"
+     * - "9/25 26:15"
+     * - "25:30"
+     */
+    function parseQuickText(raw) {
+      if (!raw) return;
+      const text = raw.trim();
+
+      // Check for full format: YYYY[-/]MM[-/]DD HH:mm(:ss)?
+      const fullRegex = /(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})[T\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/;
+      const matchFull = text.match(fullRegex);
+
+      if (matchFull) {
+        const y = matchFull[1];
+        const m = pad2(matchFull[2]);
+        const d = pad2(matchFull[3]);
+        inputDate.value = `${y}-${m}-${d}`;
+        inputHour.value = matchFull[4];
+        inputMinute.value = matchFull[5];
+        inputSecond.value = matchFull[6] !== undefined ? matchFull[6] : '0';
+        calculate();
+        showToast('已解析填入日期與時間！');
+        return;
+      }
+
+      // Check for month/day without year: MM[-/]DD HH:mm(:ss)?
+      const mdRegex = /(\d{1,2})[-/.](\d{1,2})[T\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/;
+      const matchMd = text.match(mdRegex);
+      if (matchMd) {
+        const currentYear = new Date().getFullYear();
+        const m = pad2(matchMd[1]);
+        const d = pad2(matchMd[2]);
+        inputDate.value = `${currentYear}-${m}-${d}`;
+        inputHour.value = matchMd[3];
+        inputMinute.value = matchMd[4];
+        inputSecond.value = matchMd[5] !== undefined ? matchMd[5] : '0';
+        calculate();
+        showToast(`已解析（基準年份預設 ${currentYear}）！`);
+        return;
+      }
+
+      // Check for just HH:mm(:ss)?
+      const timeRegex = /^(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?$/;
+      const matchTime = text.match(timeRegex);
+      if (matchTime) {
+        if (!inputDate.value) {
+          // If no date currently set, set today
+          setTodayDate();
+        }
+        inputHour.value = matchTime[1];
+        inputMinute.value = matchTime[2];
+        inputSecond.value = matchTime[3] !== undefined ? matchTime[3] : '0';
+        calculate();
+        showToast('已填入時間！');
+        return;
+      }
+
+      showToast('無法辨識字串格式，請參考範例');
+    }
+
+    /**
+     * STREAMING_CHUNK:Setting current JST time
+     */
+    function setNowJst(useLateNightConvention = false) {
+      // Current system UTC
+      const now = new Date();
+      // JST is UTC + 9
+      const jstNow = new Date(now.getTime() + 9 * 3600 * 1000);
+
+      let year = jstNow.getUTCFullYear();
+      let month = jstNow.getUTCMonth() + 1;
+      let day = jstNow.getUTCDate();
+      let hour = jstNow.getUTCHours();
+      let minute = jstNow.getUTCMinutes();
+      let second = jstNow.getUTCSeconds();
+
+      // If user asks for current time and it's early morning (00:00 - 05:59),
+      // we can represent it as 24-29h of previous day if desired, or as normal 0-5h
+      inputDate.value = `${year}-${pad2(month)}-${pad2(day)}`;
+      inputHour.value = hour;
+      inputMinute.value = minute;
+      inputSecond.value = second;
+      calculate();
+      showToast('已載入日本標準時間 (JST)');
+    }
+
+    function setTodayDate() {
+      const now = new Date();
+      // JST Date
+      const jstNow = new Date(now.getTime() + 9 * 3600 * 1000);
+      const year = jstNow.getUTCFullYear();
+      const month = jstNow.getUTCMonth() + 1;
+      const day = jstNow.getUTCDate();
+      inputDate.value = `${year}-${pad2(month)}-${pad2(day)}`;
+    }
+
+    // Event Listeners for inputs
+    [inputDate, inputHour, inputMinute, inputSecond, checkMilliseconds].forEach(el => {
+      el.addEventListener('input', calculate);
+      el.addEventListener('change', calculate);
+    });
+
+    // Quick parse button & Enter key
+    btnQuickParse.addEventListener('click', () => {
+      parseQuickText(quickInput.value);
+    });
+    quickInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        parseQuickText(quickInput.value);
+      }
+    });
+
+    // Preset buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const h = btn.getAttribute('data-h');
+        const m = btn.getAttribute('data-m');
+        inputHour.value = h;
+        inputMinute.value = m;
+        inputSecond.value = 0;
+        calculate();
+        showToast(`已套用 ${h}:${m}`);
+      });
+    });
+
+    // Current JST button
+    btnCurrentJst.addEventListener('click', () => setNowJst(false));
+
+    // Reset button
+    btnReset.addEventListener('click', () => {
+      quickInput.value = '';
+      setTodayDate();
+      inputHour.value = '25';
+      inputMinute.value = '30';
+      inputSecond.value = '0';
+      calculate();
+      showToast('已重設為預設範例 (25:30)');
+    });
+
+    // Copy handlers
+    copyUtcCard.addEventListener('click', () => {
+      const text = outputUtcIso.textContent.trim();
+      copyTextToClipboard(text, '已複製 UTC (ISO 8601) 時間！');
+    });
+
+    btnCopyJst.addEventListener('click', () => {
+      const text = outputJstNormal.textContent.trim();
+      copyTextToClipboard(text, '已複製常規 JST 時間！');
+    });
+
+    btnCopyTimestamp.addEventListener('click', () => {
+      const text = outputTimestamp.textContent.trim();
+      copyTextToClipboard(text, '已複製 Unix 時間戳！');
+    });
+
+    // Initial setup on load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTodayDate();
+      inputHour.value = '25';
+      inputMinute.value = '30';
+      inputSecond.value = '0';
+      calculate();
+    });
+  </script>
+</body>
+</html>

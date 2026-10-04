@@ -49,12 +49,16 @@
 @REM echo ">>> muse_tw"
 @REM call npx bdh hokan muse_tw
 
-@REM echo ">>> dmhy"
-@REM call npx bdh hokan dmhy
 @REM echo ">>> mikan"
 @REM call npx bdh hokan mikan
 @REM echo ">>> bangumi_moe"
 @REM call npx bdh hokan bangumi_moe
+@REM echo ">>> anibt"
+@REM call npx bdh hokan anibt
+@REM echo ">>> acgnx"
+@REM call npx bdh hokan acgnx
+@REM echo ">>> dmhy"
+@REM call npx bdh hokan dmhy
 
 @REM echo ">>> mal"
 @REM call npx bdh hokan mal
@@ -122,4 +126,4 @@
 @REM call npx bdh validate tmdbBegin
 
 
-@REM call npx bdh update 202607
+@REM call npx bdh update 202610

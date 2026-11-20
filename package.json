@@ -33,6 +33,9 @@
   "engines": {
     "node": ">= 12"
   },
+  "allowScripts": {
+    "puppeteer": true
+  },
   "dependencies": {
     "cheerio": "^1.0.0",
     "dayjs": "^1.11.13",
@@ -48,11 +51,11 @@
     "node-fetch": "^2.6.0",
     "opencc-js": "^1.4.0",
     "ora": "^4.0.4",
-    "puppeteer": "^24.23.0",
-    "puppeteer-real-browser": "^1.3.16",
+    "puppeteer": "^25.18.1",
+    "puppeteer-real-browser": "^1.4.4",
     "update-notifier": "^4.1.0",
     "yargs": "^15.4.0",
-    "youtubei.js": "^18.1.0"
+    "youtubei.js": "^18.3.0"
   },
   "devDependencies": {
     "eslint": "^7.4.0",
